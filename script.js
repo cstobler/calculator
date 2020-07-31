@@ -1,0 +1,106 @@
+let currentOperator = "";
+let previousNumber = undefined;
+let numberButtons = document.querySelectorAll("button[data-number]");
+let operatorButtons = document.querySelectorAll("button[data-operator]");
+let clearButton = document.querySelector("button[data-clear]");
+let deleteButton = document.querySelector("button[data-del]");
+let percentButton = document.querySelector("button[data-per]");
+let decimalButton = document.querySelector("button[data-decimal]");
+let posNegButton = document.querySelector("button[data-pos-neg]");
+let equalsButton = document.querySelector("button[data-equals]");
+let displayNumber = document.querySelector(".displaynumber");
+
+let currentNumber = () => +displayNumber.innerHTML;
+
+let currentNumberLength = () => displayNumber.innerHTML.split("").length;
+
+const performOperation = {
+	"+": (x, y) => x + y,
+	"-": (x, y) => x - y,
+	"*": (x, y) => x * y,
+	"/": (x, y) => x / y,
+}
+
+numberButtons.forEach(button => button.addEventListener("click", () => {
+	if (currentNumberLength() > 13) return; //== Limit number of digits in display
+
+	if ((currentOperator !== "") && (previousNumber === undefined)) {
+		previousNumber = currentNumber();
+		displayNumber.innerHTML = "";
+	}
+
+	operatorButtons.forEach(button => button.classList.remove("operatorselected")); //== Deselect any highlighted operator buttons
+	displayNumber.innerHTML += button.innerHTML;
+}))
+
+operatorButtons.forEach(button => button.addEventListener("click", () => {
+	if (displayNumber.innerHTML == "") return;
+	if (previousNumber !== undefined) {
+		displayNumber.innerHTML = performOperation[currentOperator](previousNumber, currentNumber());
+		previousNumber = undefined;
+	}
+
+	operatorButtons.forEach(button => button.classList.remove("operatorselected"));
+	button.classList.add("operatorselected"); //== Highlight selected operator
+	currentOperator = button.getAttribute("data-operator");
+}))
+
+clearButton.addEventListener("click", () => {
+	currentOperator = "";
+	previousNumber = undefined;
+	displayNumber.innerHTML = "";
+	operatorButtons.forEach(button => button.classList.remove("operatorselected"));
+})
+
+deleteButton.addEventListener("click", () => displayNumber.innerHTML = displayNumber.innerHTML.slice(0, -1));
+
+percentButton.addEventListener("click", () => {
+	if (currentNumber() == "") return;
+
+	let result = +displayNumber.innerHTML / 100;
+	if (result.toString().split("").length > 13) result = +result.toString().slice(0, 13);
+
+	displayNumber.innerHTML = result;
+})
+
+decimalButton.addEventListener("click", () => {
+	if (displayNumber.innerHTML.includes(".")) return;
+	if (currentNumber() == "") displayNumber.innerHTML = "0";
+
+	displayNumber.innerHTML += ".";
+})
+
+posNegButton.addEventListener("click", () => displayNumber.innerHTML = +displayNumber.innerHTML * -1);
+
+equalsButton.addEventListener("click", () => {
+	if (previousNumber !== undefined) displayNumber.innerHTML = performOperation[currentOperator](previousNumber, currentNumber());
+
+	operatorButtons.forEach(button => button.classList.remove("operatorselected"));
+	previousNumber = undefined;
+	currentOperator = "";
+})
+
+document.addEventListener("keydown", (e) => {
+	if (e.key >= 0 || e.key <= 9) {
+		e.preventDefault();
+		document.querySelector(`button[data-number="${e.key}"]`).click();
+	} else if (e.key == "+" || e.key == "-" || e.key == "*" || e.key == "/") {
+		e.preventDefault();
+		document.querySelector(`button[data-operator="${e.key}"]`).click();
+	} else if (e.key == "Clear") {
+		e.preventDefault();
+		clearButton.click();
+	} else if (e.key == "Backspace") {
+		e.preventDefault();
+		deleteButton.click();
+	} else if (e.key == "%") {
+		e.preventDefault();
+		percentButton.click();
+	} else if (e.key == ".") {
+		e.preventDefault();
+		decimalButton.click();
+	} else if (e.key == "Enter" || e.key == "=") {
+		e.preventDefault();
+		equalsButton.click();
+	}
+})
