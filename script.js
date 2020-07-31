@@ -14,6 +14,8 @@ let currentNumber = () => +displayNumber.innerHTML;
 
 let currentNumberLength = () => displayNumber.innerHTML.split("").length;
 
+let roundResult = () => displayNumber.innerHTML.split("").length > 13 ? displayNumber.innerHTML.slice(0, 13) : displayNumber.innerHTML; //== This ensures that the result fits in the display box
+
 const performOperation = {
 	"+": (x, y) => x + y,
 	"-": (x, y) => x - y,
@@ -37,6 +39,7 @@ operatorButtons.forEach(button => button.addEventListener("click", () => {
 	if (displayNumber.innerHTML == "") return;
 	if (previousNumber !== undefined) {
 		displayNumber.innerHTML = performOperation[currentOperator](previousNumber, currentNumber());
+		displayNumber.innerHTML = roundResult();
 		previousNumber = undefined;
 	}
 
@@ -73,7 +76,10 @@ decimalButton.addEventListener("click", () => {
 posNegButton.addEventListener("click", () => displayNumber.innerHTML = +displayNumber.innerHTML * -1);
 
 equalsButton.addEventListener("click", () => {
-	if (previousNumber !== undefined) displayNumber.innerHTML = performOperation[currentOperator](previousNumber, currentNumber());
+	if (previousNumber !== undefined) {
+		displayNumber.innerHTML = performOperation[currentOperator](previousNumber, currentNumber());
+		displayNumber.innerHTML = roundResult();
+	}
 
 	operatorButtons.forEach(button => button.classList.remove("operatorselected"));
 	previousNumber = undefined;
