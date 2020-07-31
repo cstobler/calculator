@@ -69,6 +69,7 @@ percentButton.addEventListener("click", () => {
 decimalButton.addEventListener("click", () => {
 	if (displayNumber.innerHTML.includes(".")) return;
 	if (currentNumber() == "") displayNumber.innerHTML = "0";
+	// the == as opposed to === is interesting here, because the parser thinks that 0s are equivalent to "". Therefore, if there are multiple 0s, they are replaced with "0."
 
 	displayNumber.innerHTML += ".";
 })
