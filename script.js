@@ -23,10 +23,11 @@ const performOperation = {
 	"/": (x, y) => x / y,
 }
 
-window.addEventListener("resize", () => {
-	let vh = window.innerHeight * 0.01;
-	document.body.style.setProperty("--vh", `${vh}px`);
-})
+const setVH = () => document.body.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
+
+setVH();
+
+window.addEventListener("resize", setVH());
 
 numberButtons.forEach(button => button.addEventListener("click", () => {
 	if (currentNumberLength() > 13) return; //== Limit number of digits in display
