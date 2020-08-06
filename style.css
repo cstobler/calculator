@@ -67,7 +67,7 @@ button:hover {
 	color: white;
 }
 
-@media (max-width: 400px), (max-height: 620px) {
+@media (max-width: 450px), (max-height: 620px) {
 	.calculator {
 		grid-template-columns: repeat(4, 80px);
 		grid-template-rows: 100px repeat(5, 80px);
